@@ -1,1 +1,1 @@
-# moderation-app-poc
+# moderation-app-mvp
