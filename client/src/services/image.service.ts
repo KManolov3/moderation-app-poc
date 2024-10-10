@@ -1,6 +1,6 @@
 import { Category, Image } from '../types/Image';
 import { isNil, isNumber } from 'lodash';
-import mock from './mocked-images.json';
+import { mockedImagesService } from './mocked-images.service';
 
 type Order = 'upload_time_ASC' | 'upload_time_DESC' | 'confidence_ASC' | 'confidence_DESC';
 
@@ -81,8 +81,7 @@ export class ImageService {
 
     // const resJson = await res.json();
 
-    // TODO: Apply filtering to mock
-    const resJson = mock;
+    const resJson = mockedImagesService.getImages(params);
 
     if (!this.isValidResponse(resJson)) {
       throw new Error(`Received invalid response format ${resJson?.toString()}`);
