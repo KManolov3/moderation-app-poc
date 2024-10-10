@@ -1,6 +1,5 @@
-import { Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Container } from '../../components/Container';
 
 export function Annotations() {
   return (
