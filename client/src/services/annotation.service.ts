@@ -2,7 +2,7 @@ import { Annotation } from "../types/Annotation";
 import { Image } from "../types/Image";
 import { mockedImagesService } from "./mocked-images.service";
 
-export class ImageService {
+class AnnotationService {
   private baseUrl: string;
   constructor() {
     this.baseUrl = process.env.BASE_URL ?? '';
@@ -26,3 +26,5 @@ export class ImageService {
     return res;
   }
 }
+
+export const annotationService = new AnnotationService();

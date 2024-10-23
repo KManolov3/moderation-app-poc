@@ -23,7 +23,8 @@ interface ImagesResponse {
 
 export interface PaginatedResult<T> {
   data: T[];
-  loadMore?: () => Promise<PaginatedResult<T>>;
+  loadPrevious?: () => Promise<PaginatedResult<T>>;
+  loadNext?: () => Promise<PaginatedResult<T>>;
   totalResults: number;
 }
 
@@ -48,7 +49,7 @@ function toUrlSearchParam(value: unknown): string {
   throw new Error("Unsupported type");
 }
 
-export class ImageService {
+class ImageService {
   private baseUrl: string;
   constructor() {
     this.baseUrl = process.env.BASE_URL ?? '';
@@ -114,16 +115,25 @@ export class ImageService {
       limit: pageSize
     });
 
-    const loadMore = () => this.fetchPaginatedImages({
+    const loadNext = (page * pageSize < totalResults) ? () => this.fetchPaginatedImages({
       ...params,
       page: page + 1,
       pageSize
-    });
+    }) : undefined;
+
+    const loadPrevious = page > 0 ? () => this.fetchPaginatedImages({
+      ...params,
+      page: page - 1,
+      pageSize
+    }) : undefined;
 
     return {
       data,
-      loadMore,
+      loadPrevious,
+      loadNext,
       totalResults
     }
   }
 }
+
+export const imageService = new ImageService();
