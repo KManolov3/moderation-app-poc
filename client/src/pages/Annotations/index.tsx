@@ -1,11 +1,12 @@
-import { Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import { Link } from 'react-router-dom';
+import FilterPanel from '../../components/FilterPanel';
 
 export function Annotations() {
   return (
-    <Container>
+    <Container maxWidth={'xl'}>
       <Link to='/review'> Review Mode </Link>
-      <Typography> Annotations Page</Typography>
+      <FilterPanel />
     </Container>
   );
 }
