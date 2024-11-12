@@ -7,12 +7,16 @@ class MockedImagesService {
   private images: Image[];
 
   constructor() {
-    this.images = mockedImages;
+    this.images = mockedImages as Image[];
   }
 
   getImages(filters: FilterOptions) {
-    // TODO: Apply filters?
-    return this.images;
+    return {
+      // TODO: Apply filters?
+      data: this.images,
+      offset: 0,
+      totalResults: this.images.length
+    }
   }
 
   annotate(annotation: Annotation) {

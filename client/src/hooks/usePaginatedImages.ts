@@ -42,6 +42,7 @@ export function usePaginatedImages(filters: FilterOptions, pageSize = 60): Pagin
 
     setPaginatedResults({
       ...initialPaginationState,
+      totalResults: res.totalResults,
       imagesInPage: res.data,
       loadPreviousPage: res.loadPrevious,
       loadNextPage: res.loadNext
@@ -50,6 +51,7 @@ export function usePaginatedImages(filters: FilterOptions, pageSize = 60): Pagin
     return res.data;
   }, [filters, pageSize]);
 
+  // TODO: Expose to show current index in relation to total results count
   const absoluteImageIndex = useMemo(
     () => paginatedResults.indexInPage + paginatedResults.currentPage * pageSize, 
     [pageSize, paginatedResults.indexInPage, paginatedResults.currentPage]
@@ -119,8 +121,7 @@ export function usePaginatedImages(filters: FilterOptions, pageSize = 60): Pagin
   } = useAsyncAction(async () => {
     const { indexInPage, imagesInPage } = paginatedResults;
 
-    // TODO: Should this be < pageSize -1
-    if (indexInPage < pageSize) {
+    if (indexInPage < pageSize - 1) {
       const updatedIndex = indexInPage + 1;
       setPaginatedResults({
         ...paginatedResults,
@@ -170,6 +171,10 @@ export function usePaginatedImages(filters: FilterOptions, pageSize = 60): Pagin
     getNextImage: absoluteImageIndex !== paginatedResults.totalResults ? getNextImage : undefined,
     getPrevImage: absoluteImageIndex !== 0 ? getPrevImage : undefined,
     imagesInPage: paginatedResults.imagesInPage,
+    // TODO: Potential future improvement: allow for the pageSize to be larger than the
+    // number of images shown on screen. In that case, modify `getNextPage` and
+    // `getPreviousPage` to check whether they to index the already loaded `page`,
+    // or whether they need to load the next one.
     getNextPage: paginatedResults.loadNextPage ? getNextPage : undefined,
     getPreviousPage: paginatedResults.loadPreviousPage ? getPrevPage : undefined,
     totalResults: paginatedResults.totalResults

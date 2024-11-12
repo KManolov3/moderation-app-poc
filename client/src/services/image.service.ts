@@ -4,8 +4,7 @@ import { mockedImagesService } from './mocked-images.service';
 
 type Order = 'upload_time_ASC' | 'upload_time_DESC' | 'confidence_ASC' | 'confidence_DESC';
 
-// TODO: Previously Mark mentioned we might not want an uncertain Category
-export const ALL_CATEGORIES: Category[] = ['porn', 'not_porn', 'uncertain'];
+export const ALL_CATEGORIES: Category[] = ['porn', 'not_porn', 'uncertain', 'not_annotated'];
 
 export interface FilterOptions {
   from?: number;
@@ -86,7 +85,7 @@ class ImageService {
     const resJson = mockedImagesService.getImages(params);
 
     if (!this.isValidResponse(resJson)) {
-      throw new Error(`Received invalid response format ${resJson?.toString()}`);
+      throw new Error(`Received invalid response format ${(resJson as any)?.toString()}`);
     }
     
     return resJson;

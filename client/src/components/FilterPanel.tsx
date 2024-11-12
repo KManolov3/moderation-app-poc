@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Category } from '../types/Image';
 
-interface SelectedFilterOptions {
+interface SelectedFilters {
   confidence: number[];
   startDate: string;
   endDate: string;
@@ -21,7 +21,7 @@ interface SelectedFilterOptions {
 }
 
 const categoryOptions: {
-  id: Category | 'unreviewed';
+  id: Category;
   label: string;
 }[] = [
   {
@@ -37,14 +37,14 @@ const categoryOptions: {
     label: 'Uncertain',
   },
   {
-    id: 'unreviewed',
+    id: 'not_annotated',
     label: 'Unreviewed',
   },
 ];
 
 const initialCategoryOptions = categoryOptions.map((c) => false);
 
-const initialSelectedFilters = ((): SelectedFilterOptions => {
+const initialSelectedFilters = ((): SelectedFilters => {
   const date = new Date();
   const today = date.toJSON().slice(0, 10);
   date.setDate(date.getDate() - 7);
@@ -58,14 +58,29 @@ const initialSelectedFilters = ((): SelectedFilterOptions => {
   };
 })();
 
-function toFilterOptions(filters: SelectedFilterOptions) {
-  return {};
+function toUnixTimestamp(date: string) {
+  return new Date(date).getTime() / 1000;
+}
+
+function toFilterOptions(filters: SelectedFilters): FilterOptions {
+  return {
+    // TODO: `from` and `to` currently expect a unix timestamp
+    // Change if strings are easier to work with.
+    from: toUnixTimestamp(filters.startDate),
+    to: toUnixTimestamp(filters.endDate),
+    confidence_min: filters.confidence[0],
+    confidence_max: filters.confidence[1],
+    categories: categoryOptions
+      .filter((_, index) => filters.checks[index])
+      .map((category) => category.id),
+  };
 }
 
 interface Props {
-  setFilters: (filters: FilterOptions) => void;
+  setFilters: React.Dispatch<React.SetStateAction<FilterOptions>>;
 }
 
+// TODO: Implement `order_by` filter
 export function FilterPanel({ setFilters }: Props) {
   const [selectedFilters, setSelectedFilters] = useState(
     initialSelectedFilters
@@ -96,9 +111,14 @@ export function FilterPanel({ setFilters }: Props) {
     setSelectedFilters(initialSelectedFilters);
   }, [setSelectedFilters]);
 
-  const handleFilter = useCallback(() => {
-    setFilters(toFilterOptions(selectedFilters));
-  }, [selectedFilters, setFilters]);
+  const handleFilter = useCallback(
+    () =>
+      setFilters((filters) => ({
+        ...filters,
+        ...toFilterOptions(selectedFilters),
+      })),
+    [selectedFilters, setFilters]
+  );
 
   const sliderMarks = useMemo(
     () => [
@@ -125,7 +145,10 @@ export function FilterPanel({ setFilters }: Props) {
       <Grid container alignItems='center' spacing={2}>
         <Grid size={12} container alignItems='center' spacing={10}>
           <Grid size={2.5}>
-            <Typography variant='h6'>Syd Barrett</Typography>
+            <Typography variant='h6'>
+              {/* Change to username, once we have access to the current user identity*/}
+              Syd Barrett
+            </Typography>
           </Grid>
           <Grid size={4.5}>
             <Typography gutterBottom>Confidence</Typography>

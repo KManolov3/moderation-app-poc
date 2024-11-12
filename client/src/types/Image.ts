@@ -2,12 +2,13 @@ export type Category = 'porn' | 'not_porn' | 'uncertain' | 'not_annotated';
 
 export interface Image {
   id: string;
-  userId: string;
+  userName: string;
   // number in range 0-1
   confidence: number;
-  url: string;
-  // if undefined, this is interpreted as 'not_annotated'
+  imageUrl: string;
+  userProfileUrl: string;
+  // if undefined, this should be interpreted as 'not_annotated'
   category?: Category;
-  // TODO: Is unix timestamp fine?
+  // TODO: Decide whether to use unix timestamps vs a string format
   uploadTime: number;
 }
