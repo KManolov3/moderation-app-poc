@@ -119,6 +119,7 @@ export function usePaginatedImages(filters: FilterOptions, pageSize = 60): Pagin
   } = useAsyncAction(async () => {
     const { indexInPage, imagesInPage } = paginatedResults;
 
+    // TODO: Should this be < pageSize -1
     if (indexInPage < pageSize) {
       const updatedIndex = indexInPage + 1;
       setPaginatedResults({

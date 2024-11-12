@@ -1,10 +1,11 @@
 import { Category, Image } from '../types/Image';
-import { isNil, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import { mockedImagesService } from './mocked-images.service';
 
 type Order = 'upload_time_ASC' | 'upload_time_DESC' | 'confidence_ASC' | 'confidence_DESC';
 
-const ALL_CATEGORIES: Category[] = ['porn', 'not_porn', 'uncertain'];
+// TODO: Previously Mark mentioned we might not want an uncertain Category
+export const ALL_CATEGORIES: Category[] = ['porn', 'not_porn', 'uncertain'];
 
 export interface FilterOptions {
   from?: number;
